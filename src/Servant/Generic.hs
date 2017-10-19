@@ -16,6 +16,7 @@ module Servant.Generic
   , AsApi
   , ToServant
   , toServant
+  , fromServant
   , GenericProduct
   -- * Internals
   , GProduct(..)
@@ -29,18 +30,22 @@ import          Servant
 class GProduct f where
   type GToServant f
   gtoServant :: f p -> GToServant f
+  gfromServant :: GToServant f -> f p
 
 instance GProduct f => GProduct (M1 i c f) where
   type GToServant (M1 i c f) = GToServant f
   gtoServant (M1 x) = gtoServant x
+  gfromServant x = M1 (gfromServant x)
 
 instance (GProduct l, GProduct r) => GProduct (l :*: r) where
   type GToServant (l :*: r) = GToServant l :<|> GToServant r
   gtoServant (l :*: r) = gtoServant l :<|> gtoServant r
+  gfromServant (l :<|> r) = gfromServant l :*: gfromServant r
 
 instance GProduct (K1 i c) where
   type GToServant (K1 i c) = c
   gtoServant (K1 x) = x
+  gfromServant x = K1 x
 
 type GenericProduct a = (Generic a, GProduct (Rep a))
 
@@ -62,6 +67,14 @@ type ToServant a = GToServant (Rep a)
 -- | See `ToServant`, but at value-level.
 toServant :: GenericProduct a => a -> ToServant a
 toServant = gtoServant . from
+
+-- | Inverse of `toServant`.
+--
+-- This can be used to turn 'generated' values such as client functions into records.
+--
+-- You may need to provide a type signature for the /output/ type (your record type).
+fromServant :: GenericProduct a => ToServant a -> a
+fromServant = to . gfromServant
 
 -- | A type family that applies an appropriate type family to the @api@ parameter.
 -- For example, passing `AsApi` will leave @api@ untouched, while @`AsServerT` m@ will produce @`ServerT` api m@. 
