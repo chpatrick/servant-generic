@@ -14,6 +14,7 @@ module Servant.Generic
   , AsServerT
   , AsServer
   , AsApi
+  , AsLink
   , ToServant
   , toServant
   , fromServant
@@ -84,6 +85,12 @@ infixl 8 :-
 -- | A type that specifies that an API record contains an API definition. Only useful at type-level.
 data AsApi
 type instance AsApi :- api = api
+
+-- | A type that specifies that an API record contains a set of links.
+--
+-- (Useful since servant 0.12)
+data AsLink
+type instance AsLink :- api = MkLink api
 
 -- | A type that specifies that an API record contains a server implementation.
 data AsServerT (m :: * -> *)
