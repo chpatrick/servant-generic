@@ -3,6 +3,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+import           Data.Monoid
 import           Servant
 import           Servant.Generic
 import qualified Data.Text as T
@@ -13,6 +14,8 @@ import           System.Timeout
 data Site route = Site
   { about :: route :-
       "about" :> Get '[PlainText] Text
+  , aboot :: route :-
+      "aboot" :> Get '[PlainText] Text
   , faq :: route :-
       "faq" :> Get '[PlainText] Text
   , subSite :: route :-
@@ -39,6 +42,7 @@ subSiteServer = SubSite
 siteServer :: Site AsServer
 siteServer = Site
   { about = return "about"
+  , aboot = return ("did you mean " <> toUrlPiece (fieldLink about) <> "?")
   , faq = return "faq"
   , subSite = toServant subSiteServer
   , home = return "So long and thanks for all the :<|>"

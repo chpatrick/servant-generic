@@ -8,7 +8,8 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE DataKinds #-}
-  
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Servant.Generic
   ( (:-)
   , AsServerT
@@ -22,6 +23,8 @@ module Servant.Generic
   -- * Internals
   , GProduct(..)
   , Generic(..)
+
+  , fieldLink
   ) where
 
 import          GHC.Generics
@@ -52,7 +55,7 @@ type GenericProduct a = (Generic a, GProduct (Rep a))
 
 -- | Turns a generic product type into a linear tree of `:<|>` combinators.
 -- For example, given
--- 
+--
 -- @
 --   data Foo route = Foo
 --     { foo :: route :-
@@ -61,7 +64,7 @@ type GenericProduct a = (Generic a, GProduct (Rep a))
 --         Get '[PlainText] Text
 --     }
 -- @
--- 
+--
 -- @ ToServant (Foo AsApi) ~ Get '[PlainText] Text :\<|\> Get '[PlainText] Text @
 type ToServant a = GToServant (Rep a)
 
@@ -96,3 +99,7 @@ type instance AsLink :- api = MkLink api
 data AsServerT (m :: * -> *)
 type instance AsServerT m :- api = ServerT api m
 type AsServer = AsServerT Handler
+
+-- | Given an API record field, create a link for that route. Only the field's type is used.
+fieldLink :: forall routes endpoint. (IsElem endpoint (ToServant (routes AsApi)), HasLink endpoint) => (routes AsApi -> endpoint) -> MkLink endpoint
+fieldLink _ = safeLink (Proxy :: Proxy (ToServant (routes AsApi))) (Proxy :: Proxy endpoint)
