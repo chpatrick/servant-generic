@@ -79,7 +79,7 @@ fromServant = to . gfromServant
 -- | A type family that applies an appropriate type family to the @api@ parameter.
 -- For example, passing `AsApi` will leave @api@ untouched, while @`AsServerT` m@ will produce @`ServerT` api m@. 
 type family mode :- api
-infixl 8 :-
+infixl 3 :-
 
 -- | A type that specifies that an API record contains an API definition. Only useful at type-level.
 data AsApi
