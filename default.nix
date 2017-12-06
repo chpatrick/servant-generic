@@ -1,2 +1,3 @@
-{ nixpkgs ? import <nixpkgs> {}, compiler ? "ghc802" }:
-(nixpkgs.pkgs.haskell.packages.${compiler}.callPackage ./servant-generic.nix { }).env
+{ pkgs ? import <nixpkgs> {} }:
+let drv = pkgs.haskell.packages.ghc821.callCabal2nix "servant-generic" ./. {};
+in if pkgs.lib.inNixShell then drv.env else drv
