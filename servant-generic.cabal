@@ -36,4 +36,5 @@ test-suite example-basic
                        servant-server >= 0.7.1,
                        servant-generic,
                        text,
-                       warp
+                       warp,
+                       network-uri
