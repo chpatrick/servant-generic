@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -81,7 +82,7 @@ fromServant :: GenericProduct a => ToServant a -> a
 fromServant = to . gfromServant
 
 -- | A type family that applies an appropriate type family to the @api@ parameter.
--- For example, passing `AsApi` will leave @api@ untouched, while @`AsServerT` m@ will produce @`ServerT` api m@. 
+-- For example, passing `AsApi` will leave @api@ untouched, while @`AsServerT` m@ will produce @`ServerT` api m@.
 type family mode :- api
 infixl 3 :-
 
@@ -93,7 +94,12 @@ type instance AsApi :- api = api
 --
 -- (Useful since servant 0.12)
 data AsLink
+#if MIN_VERSION_servant(0,14,0)
+type instance AsLink :- api = MkLink api Link
+#else
 type instance AsLink :- api = MkLink api
+#endif
+
 
 -- | A type that specifies that an API record contains a server implementation.
 data AsServerT (m :: * -> *)
@@ -101,5 +107,11 @@ type instance AsServerT m :- api = ServerT api m
 type AsServer = AsServerT Handler
 
 -- | Given an API record field, create a link for that route. Only the field's type is used.
-fieldLink :: forall routes endpoint. (IsElem endpoint (ToServant (routes AsApi)), HasLink endpoint) => (routes AsApi -> endpoint) -> MkLink endpoint
+fieldLink :: forall routes endpoint. (IsElem endpoint (ToServant (routes AsApi)), HasLink endpoint)
+          => (routes AsApi -> endpoint)
+#if MIN_VERSION_servant(0,14,0)
+          -> MkLink endpoint Link
+#else
+          -> MkLink endpoint
+#endif
 fieldLink _ = safeLink (Proxy :: Proxy (ToServant (routes AsApi))) (Proxy :: Proxy endpoint)
