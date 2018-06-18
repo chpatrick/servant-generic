@@ -20,7 +20,7 @@ library
   exposed-modules:     Servant.Generic    
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.7 && <4.11,
+  build-depends:       base >=4.7 && <4.12,
                        servant >= 0.7.1,
                        servant-server >= 0.7.1
   hs-source-dirs:      src
