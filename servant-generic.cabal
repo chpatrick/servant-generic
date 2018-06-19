@@ -1,5 +1,5 @@
 name:                servant-generic
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Specify Servant APIs with records.
 description:         Specify Servant APIs with records instead of @:\<|\>@ trees. See the <https://github.com/chpatrick/servant-generic/blob/master/README.md#tldr README> for more information.
 license:             MIT
