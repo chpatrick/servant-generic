@@ -1,3 +1,5 @@
+__This package has been merged into servant 0.14.1, please use that instead if available.__
+
 [![Build Status](https://travis-ci.org/chpatrick/servant-generic.svg?branch=master)](https://travis-ci.org/chpatrick/servant-generic) [![Hackage](https://img.shields.io/hackage/v/servant-generic.svg)](http://hackage.haskell.org/package/servant-generic)
 
 tl;dr

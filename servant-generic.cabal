@@ -1,7 +1,7 @@
 name:                servant-generic
-version:             0.1.0.2
+version:             0.1.0.3
 synopsis:            Specify Servant APIs with records.
-description:         Specify Servant APIs with records instead of @:\<|\>@ trees. See the <https://github.com/chpatrick/servant-generic/blob/master/README.md#tldr README> for more information.
+description:         Specify Servant APIs with records instead of @:\<|\>@ trees. See the <https://github.com/chpatrick/servant-generic/blob/master/README.md#tldr README> for more information. __This package has been merged into servant 0.14.1, please use that instead if available.__
 license:             MIT
 license-file:        LICENSE
 author:              Patrick Chilton
@@ -21,7 +21,7 @@ library
   -- other-modules:
   -- other-extensions:
   build-depends:       base >=4.7 && <4.12,
-                       servant >= 0.7.1,
+                       servant >= 0.7.1 && <0.14.1,
                        servant-server >= 0.7.1
   hs-source-dirs:      src
   default-language:    Haskell2010
